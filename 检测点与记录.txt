@@ -1,0 +1,119 @@
+检查点1
+1.13
+2.1024  0到1023
+3.8192 1024
+4.2^30,2^20,2^10
+5.64,1,16,4
+6.1,1,2,2,4
+7.512,256
+8.二进制
+
+检测点2
+(1)
+1.mov ax,62627  AX=F4A3H
+2.mov ah,31H  AX=31A3H
+3.mov al,23H  AX=3123H
+4.add ax,ax  AX=6246H
+5.mov bx,826CH  BX=826CH
+6.mov cx,ax  CX=6246H
+7.mov ax,bx  AX=826CH
+8.add ax,bx  AX=04D8H
+9.mov al,bh  AX=0482H
+10.mov ah,bl  AX=6C82H
+11.add ah,ah  AX=D882H
+12.add al,6  AX=D888H
+13.add al,al  AX=D810H
+14.mov ax,cx  AX=6246H
+(2)
+mov ax,2
+add ax,ax
+add ax,ax
+add ax,ax
+
+检测点2
+1.00010H，1000FH
+2.1001H，2000H
+段地址1001H以下，2000H以上都无法通过偏移地址训到20000H单元，如1000H
+
+检测点3
+1.为什么取内存单元的值不是从0000：0000开始，而是从0000：0010开始
+2.cs=2000H,ip=0,ds=1000H,ax=0,bx=0
+
+检测点3.2
+mov ax,2000H
+mov ss,ax
+mov sp,0010H
+2.mov ax,2000H
+mov ss,ax
+mov sp,0
+
+检测点6.1
+（1）
+
+mov cs:[bx],ax
+
+(2)
+cs
+24h
+pop cs:[bx]
+检测点10.1
+1000h，0000
+检测点10.2
+ax=6
+检测点10.3
+ax=1010h
+检测点10.4
+
+检测点11.1
+SUB AL,AL ZF=1,PF=1,SF=0
+MOV AL,1ZF=1,PF=0,SF=0
+PUSH AX ZF=1,PF=0，sf=0
+POP BX ZF=1，PF=0,SF=0
+ADD AL,BL ZF=0,PF=0,SF=0
+ADD AL,10 ZF=0,PF=1,SF=0
+MUL AL ZF=0,pf=1,SF=0
+检测点11.2
+sub al,al cf=0,of=0，sf=0,zf=1,pf=1
+mov al,10h,cf=0,of=0,sf=0,zf=1,pf=1
+add al,90h,cf=0,of=0,sf=1,zf=0,pf=1
+mov al,80h,cf=0,of=0,sf=1,zf=0,pf=1
+add al,80h,cf=1,of=1,sf=0,zf=1,pf=1
+mov al,0fch,cf=1,of=1,sf=0,zf=1,pf=1
+add al,05h,cf=1,of=0,sf=0,zf=0,pf=0
+mov al,7dh,cf=1,of=0,sf=0,zf=0,pf=0
+add al,0bh,cf=0,of=0,sf=1,zf=0,pf=1
+
+注释：0f0H=11110000的反吗11101111，源码10010000，-16
+78H=01111000的反码01111000，源码01111000，120
+88h=10001000,-120
+101101000
+0fch=11111100=-4
+00000101，5
+0000000120
+01111101，125
+10000010，-126
+
+检测点11.3
+1.
+jb s0
+ja s0
+2.
+jna s0
+jnb s0
+检测点11.4
+第三条语句 popf 将栈中数据 0 弹出，并送入标志寄存器，此时标志位全部置零。
+第四 / 五条语句，加法运算，0FFF0H + 0010H。对于有符号数的计算而言，(-16) + (16) = (-16)，无溢出，OF=0；对于无符号数的计算而言，(65520) + (16) = 65536，有向更高位的进位，CF=1。且 ZF=0，PF=1。
+语句 pushf 将标志寄存器的内容入栈，此时标志寄存器的内容为 0000 0000 0100 0101，则后续出栈后 (AX)=0045H。
+and al,11000101B 进行按位与运算，结果为 (AL)=0100 0101=45H；and ah,00001000B 进行按位与运算，结果为 (AH)=0000 0000H。所以，最终 (AX)=0045H。
+
+ax=45
+
+检测点12.1
+1。0070：018B
+2.4N,4N+2
+
+检测点13.1
+7ch中断例程如下：
+ip：push bp 
+mov bp,sp
+dec

@@ -1,0 +1,12 @@
+实验2
+ax=c0ea
+ax=c0fc
+bx=30f0
+bx=6021
+sp=00fe,2200:00fe 00ffH,c0ec
+sp=00fc,2200:00fc 00fd,6021
+sp=00fe,ax=6021H
+sp=0100,ax=6021H
+sp=00fe,2200:00fe 00ffH,30f0H
+sp=00fc,2200:00fc 00fd,6021-30f0=2f31H
+

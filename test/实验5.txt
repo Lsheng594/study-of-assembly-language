@@ -1,0 +1,45 @@
+（1）
+1.data中的数据不变
+2.cs=04B0,ss=04AD,ds=049E
+3.data=x-11,stack=x-2
+（2）
+4.((N+15)/16)*16,程序加载后分配的空间以16个字节为单位，如果不足16个字节的也分配16字节
+（3）
+4.第三个成程序可以执行
+5.
+mov ax,a
+mov ds,ax
+mov ax,b
+mov es,ax
+mov ax,c
+mov ss,ax
+mov bx,0
+mov cx,8
+s1:
+mov ax,[bx]
+mov ss:[bx],ax
+mov ax,es:[bx]
+add ss:[bx],ax
+
+inc bx
+loop s
+
+mov ax,4c00h
+int 21h
+
+code ends
+
+end start
+
+6.
+mov ax,b
+mov ss,ax
+mov sp,10H
+mov ax,a
+mov ds,ax
+mov bx,0
+mov cx,8
+s:
+push [bx]
+add bx,2
+loop s 

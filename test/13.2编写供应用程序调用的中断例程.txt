@@ -1,0 +1,120 @@
+assume cs:code
+
+code segment
+
+start:mov ax,3456;（ax）=3456
+	it 7ch;调用中断7ch的中断例程，计算ax中的数据的平方
+	add ax,ax
+	adc dx,ax;ds：ax存放结果，将结果乘以2
+	mov ax,4c00h
+	int 21h
+
+code ends
+
+end start
+
+assume cs:code
+
+code segment
+start:mov ax,cs
+	mov ds,ax
+	mov  si,offset sqr;设置ds:si指向源地址
+	mov ax,0
+	mov es,ax
+	mov di,200h;设置es:di指向目的地址
+	mov cx,offset sqrend-offset sqr;设置cx为传输长度
+	cld;设置传输方向为正
+	rep movsb
+
+	mov ax,0
+	mov es,ax
+	mov word ptr es:[7ch*4],200h
+	mov word ptr es;[7ch*4+2],0
+
+	mov ax,4c00h
+	int 21h
+
+sqr:mul ax
+	iret
+
+sqrend:nop
+
+code ends
+end start
+
+问题二：编写、安装中断7ch的中断例程
+功能：将一个全是字母，以0结尾的字符串，转化为大写。
+参数：ds：si指向字符串的首地址
+assume cs:code
+
+data segment
+	db 'conversation',0
+data ends
+code segment
+start:mov ax,data
+	mov ds,ax
+	mov si,0
+	int 7ch
+
+	mov ax,4c00h
+	int 21h
+code ends
+end start
+
+assume cs:code
+code segment
+
+start:mov ax,cs
+	mov ds,ax
+	mov si,offset capital
+	mov ax,0
+	mov es,ax
+	mov di,200h
+	mov cx,offset capitalend-offset capital
+	cld
+	rep movsb
+
+	mov ax,0
+	mov es,ax
+	mov word ptr es:[7ch*4],200h
+	mov word ptr es:[7ch*4+2],0
+	mov ax,4c00h
+	int 21h
+
+capital:push cx
+	push si
+
+change:mov cl,[si]
+	mov ch,0
+	jcxz ok
+	and byte ptr [si],11011111b
+	inc si
+	jmp short change
+ok:pop si
+	pop cx
+	iret
+capitalend:nop
+
+code ends
+end start
+
+13.3
+问题：用7ch中断例程完成loop指令的功能
+assume cs:code
+code segment
+start:mov ax,0b800h
+	mov es,ax
+	mov di,160*12;指向循环目标位
+
+	mov bx,offset s-offset se;设置从标号se到标号s转移位移
+	mov cx,80
+	s:mov byte ptr es:[di],'!'
+	add di,2
+	int 7ch;	如果（cx）=0，转移到标号s处
+	se:nop
+
+	mov ax,4c00h
+	int 21h
+
+code ends
+end start
